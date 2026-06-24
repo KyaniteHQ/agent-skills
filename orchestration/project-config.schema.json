@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "project-config — the host project's slice taxonomy for to-slices / slice-conductor",
+  "description": "Supplied by the host project (via --config or the HARNESS_PROJECT_CONFIG env var) so validate_dag.py and boundary_check.py know which files are foundational and how the codebase layers. Without it the orchestration still runs all STRUCTURAL checks (schema, well-formedness, acyclicity, touch_set-overlap collisions); only shared-core serialization and advisory layer ranks are disabled (with a loud warning).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "package_prefix": {
+      "type": "string",
+      "default": "",
+      "description": "A path prefix stripped from both touch_set entries and `git diff --name-only` output before comparison, so the gate and the runtime boundary check share one path space. E.g. a project whose package lives under `src/app/` sets this to `src/app/` and writes touch_sets package-relative. Empty string = no prefix."
+    },
+    "shared_core": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [],
+      "description": "Files/dirs that churn shared state on ANY touch and must run serially (two concurrent slices touching shared-core collide). Matched with the same path-overlap logic as touch_sets (dir prefixes + globs). E.g. core domain models, shared interfaces, build manifests/lockfiles."
+    },
+    "layers": {
+      "type": "array",
+      "items": { "type": "array", "items": { "type": "string" } },
+      "default": [],
+      "description": "Ordered architectural layers; the OUTER array index is the advisory layer rank (0 = most foundational). Each inner array lists the path prefixes at that rank, so ties are expressible. Display-only: NOT a hard gate (vertical slices span layers). E.g. [[\"core/\"], [\"models.ts\"], [\"adapters/\"], [\"app/\"]]."
+    },
+    "gate_command": {
+      "type": "string",
+      "default": "",
+      "description": "The project's offline test/lint/type gate command (e.g. `npm test`, or `uv run pytest -q`). slice-conductor / the implementer agent run this as the regression guard. Discoverable from the project's AGENTS.md/CLAUDE.md or build manifest if omitted."
+    }
+  }
+}

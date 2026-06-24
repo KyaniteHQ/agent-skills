@@ -1,0 +1,14 @@
+{
+  "package_prefix": "src/",
+  "shared_core": ["models.ts", "interfaces.ts", "core/", "config.ts", "package.json", "lockfile"],
+  "layers": [
+    ["core/"],
+    ["models.ts"],
+    ["config.ts"],
+    ["interfaces.ts"],
+    ["adapters/"],
+    ["service.ts"],
+    ["app/"]
+  ],
+  "gate_command": "npm test"
+}

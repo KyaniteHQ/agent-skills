@@ -3,7 +3,76 @@
   "owner": {
     "name": "KyaniteHQ"
   },
+  "metadata": {
+    "description": "KyaniteHQ's agent harness: reusable Claude Code / Codex skills, generic implementer/reviewer agent templates, and shared orchestration contracts."
+  },
   "plugins": [
+    {
+      "name": "babysit-pr",
+      "source": "./skills/babysit-pr",
+      "strict": false,
+      "description": "Shepherd a slice's squash-merge PR to `main` end-to-end: pre-PR quality loop, open with a reviewer-ready description, poll CI gates, delegate the Greptile loop to greploop, fix findings, and squash-merge only when green."
+    },
+    {
+      "name": "greploop",
+      "source": "./skills/greploop",
+      "strict": false,
+      "description": "Iteratively drive a PR to a clean Greptile review (5/5, zero unresolved comments): re-review, fix every actionable finding, reply, resolve threads, push, repeat (max 5 rounds). Adapted from greptileai/skills (MIT)."
+    },
+    {
+      "name": "check-pr",
+      "source": "./skills/check-pr",
+      "strict": false,
+      "description": "One-shot triage of a GitHub PR: unresolved review comments, failing checks, and an incomplete description; categorize each issue and optionally fix, push, and resolve threads. Adapted from greptileai/skills (MIT)."
+    },
+    {
+      "name": "greptile-cli",
+      "source": "./skills/greptile-cli",
+      "strict": false,
+      "description": "Run and manage local Greptile reviews from the terminal with the `greptile` CLI — review a branch before opening a PR, plus login/settings/update."
+    },
+    {
+      "name": "pr-review-canvas",
+      "source": "./skills/pr-review-canvas",
+      "strict": false,
+      "description": "Render an interactive HTML PR-review walkthrough for any GitHub repo: categorizes core vs mechanical changes, adds reviewer annotations, and renders diffs with moved-code detection."
+    },
+    {
+      "name": "adversarial-plan-bounce",
+      "source": "./skills/adversarial-plan-bounce",
+      "strict": false,
+      "description": "Adversarially grade a plan file with Codex as a second model (0-100, structural blockers, held decisions). v1 = one scoring round; v2 loops bounce -> maximize -> re-bounce until the plan converges."
+    },
+    {
+      "name": "metric-gated-refactor",
+      "source": "./skills/metric-gated-refactor",
+      "strict": false,
+      "description": "Metric-gated refactoring loop for Python: requires a measured signal (radon CC + grimp/Louvain) AND a named semantic problem before any change, then generates a ready-to-run /goal prompt. Python only."
+    },
+    {
+      "name": "to-slices",
+      "source": "./skills/to-slices",
+      "strict": false,
+      "description": "Decompose a plan/PRD/feature into a VALIDATED DAG of vertically-sliced issues (touch-set, acceptance criteria, blocked-by, layer-rank) behind a fail-loud Kahn + antichain + layer-rank gate. Orchestration bundle: use via full-repo clone (depends on orchestration/ + agents/)."
+    },
+    {
+      "name": "slice-conductor",
+      "source": "./skills/slice-conductor",
+      "strict": false,
+      "description": "Execute a validated slice DAG end-to-end as an agent-team lead: worktree per slice, persistent implementer + reviewer, implement -> review -> fix to PASS, integration-branch merge, then one babysit-pr ship. Orchestration bundle: use via full-repo clone (depends on orchestration/ + agents/)."
+    },
+    {
+      "name": "inspect-site",
+      "source": "./skills/inspect-site",
+      "strict": false,
+      "description": "Live-site reconnaissance via chrome-devtools MCP: drive a real attached browser to observe endpoints, request/response shapes, DOM, and console — every claim tagged with a truth level (structural / engine-observed / production-validated)."
+    },
+    {
+      "name": "image-gen",
+      "source": "./skills/image-gen",
+      "strict": false,
+      "description": "Generate or edit images via ChatGPT's image_generation tool (gpt-image-2), authenticating with Codex/ChatGPT OAuth tokens — no API key, just an active Codex login."
+    },
     {
       "name": "modern-seo",
       "source": {
