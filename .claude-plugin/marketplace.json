@@ -80,6 +80,14 @@
         "repo": "KyaniteHQ/modern-seo"
       },
       "description": "Primary-source SEO and agentic-web guidance grounded in Google's AI optimization guide and Chrome's agentic-browsing docs. Covers the two-surface model: ranking in Google Search/AI features, and being usable by AI agents (WebMCP, Lighthouse agentic-browsing, UCP)."
+    },
+    {
+      "name": "gbp-optimize",
+      "source": {
+        "source": "github",
+        "repo": "KyaniteHQ/gbp-optimize"
+      },
+      "description": "Google Business Profile (GBP / Google My Business) optimization for Google Maps & local-pack ranking and AI-search visibility — audit, categories, reviews, citations, suspensions, local schema, and a deep Turkey playbook. Primary-source-grounded; fully global."
     }
   ]
 }
