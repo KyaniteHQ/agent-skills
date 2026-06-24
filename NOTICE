@@ -1,0 +1,18 @@
+agent-skills (kyanite-skills)
+Copyright (c) 2026 KyaniteHQ
+
+This product includes skills that are adapted from, or carry conceptual
+lineage to, third-party open-source work. Attribution below.
+
+--------------------------------------------------------------------------------
+skills/greploop, skills/check-pr
+  Adapted from greptileai/skills (https://github.com/greptileai/skills), MIT License.
+  Customized: generic repo/CI discovery (no hardcoded repo slug or project invariants),
+  GitHub-only review loop.
+
+--------------------------------------------------------------------------------
+skills/to-slices
+  Conceptual lineage to the "/to-issues" skill from mattpocock/skills
+  (https://github.com/mattpocock/skills). The validated-DAG implementation
+  (Kahn acyclicity + antichain collision + layer-rank, validate_dag.py) is original
+  to this repo; SKILL.md prose is written clean-room. Credited as courtesy.

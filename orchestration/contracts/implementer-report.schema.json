@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "implementer-report.schema.json",
+  "title": "implementer final report — verbatim with the agents/implementer.md contract",
+  "description": "Matches the JSON the implementer agent emits as its final message. report_file is the OPTIONAL file-based handoff the conductor's dispatch prompt adds (spike finding: bare SendMessage replies are unreliable, so teammates also write this file).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["issue", "branch", "commit", "at_result", "linear_state_set"],
+  "properties": {
+    "issue": { "type": "string", "description": "ISSUE-XX (or the slice id when not yet published)" },
+    "branch": { "type": "string", "description": "the implementer's worktree branch" },
+    "commit": { "type": "string", "description": "commit SHA on that branch" },
+    "files_changed": { "type": "array", "items": { "type": "string" } },
+    "acs_ticked": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "AC ids the implementer verified met, each backed by observed evidence captured in at_result/full_suite."
+    },
+    "acs_unmet": { "type": "array", "items": { "type": "string" } },
+    "at_command": { "type": "string" },
+    "at_result": { "type": "string", "description": "PASS/FAIL + key output of the acceptance test" },
+    "full_suite": { "type": "string", "description": "e.g. 'NNN passed / M skipped'" },
+    "mypy_ruff": { "type": "string", "description": "clean | <the failure>" },
+    "linear_state_set": {
+      "type": "string",
+      "enum": ["In Progress", "Blocked", "ESCALATE"],
+      "description": "Report-only signal. The implementer NEVER sets Done — the conductor flips Done after reviewer PASS + the main-loop AC gate."
+    },
+    "escalation": {
+      "type": ["string", "null"],
+      "description": "null, or the exact AC-vs-design mismatch needing the owner's call (AC-text drift)."
+    },
+    "report_file": {
+      "type": "string",
+      "description": "OPTIONAL: path to the per-slice report file the implementer also wrote (conductor reads this as the reliable result channel)."
+    }
+  }
+}

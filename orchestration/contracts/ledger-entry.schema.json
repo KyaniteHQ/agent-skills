@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ledger-entry.schema.json",
+  "title": "Per-slice run-ledger record — the conductor's durable state (Linear is only a human-facing index)",
+  "description": "One record per slice, updated by the conductor at every transition. The ledger (campaign-scoped, e.g. orchestration/runs/<slug>/ledger.json) is the source of truth for resume: a re-run skips phase=merged and resumes the rest. /resume kills teammates, so the resume context packet is rebuilt ENTIRELY from this record — report_file, verdict_file, files_changed, and last_defects exist so the re-spawned implementer gets the prior diff + the last reviewer findings without the dead teammate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slice_id", "phase", "round_count", "updated_at"],
+  "properties": {
+    "slice_id": { "type": "string" },
+    "linear_issue_id": { "type": ["string", "null"] },
+    "phase": {
+      "type": "string",
+      "enum": ["pending", "dispatched", "changes", "pass", "shipped", "merged", "held", "blocked"],
+      "description": "pending→dispatched→(changes↔dispatched)*→pass→merged (merged = into the campaign integration branch, not main). `shipped` is vestigial/unused per-slice — the only ship is the campaign-level integration→main squash. held=ESCALATE awaiting the owner; blocked=boundary breach / unrecoverable."
+    },
+    "agent_id": { "type": ["string", "null"], "description": "the live impl-<slice> teammate's addressable id (for SendMessage re-entry)" },
+    "worktree_path": { "type": ["string", "null"], "description": "the manually-created git worktree dir (the isolation flag is a no-op — see agent-teams-lifecycle-findings)" },
+    "branch": { "type": ["string", "null"] },
+    "base_sha": { "type": ["string", "null"], "description": "recorded at dispatch; the boundary check diffs <base_sha>...HEAD" },
+    "head_sha": { "type": ["string", "null"] },
+    "round_count": { "type": "integer", "minimum": 0, "description": "implementer↔reviewer rounds; ESCALATE past 3 (round_count>3 → held)" },
+    "reviewer_verdict": { "type": ["string", "null"], "enum": ["PASS", "CHANGES", "ESCALATE", null] },
+    "report_file": { "type": ["string", "null"], "description": "the implementer's last report-file path (implementer-report contract); re-read into the resume context packet" },
+    "verdict_file": { "type": ["string", "null"], "description": "the reviewer's last verdict-file path (reviewer-report contract)" },
+    "files_changed": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "files the implementer changed so far (from its report) — seeds the resume packet without re-deriving"
+    },
+    "last_defects": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "the MOST RECENT reviewer defects (CHANGES); the only place resume can read 'last findings to address' (the teammate that held them is gone). [] after a PASS verdict."
+    },
+    "ac_evidence": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "redacted per-AC evidence the conductor used to tick Linear ACs (case_id/*_hash only)"
+    },
+    "gate_result": { "type": ["string", "null"], "enum": ["pass", "fail", null], "description": "the main-loop AC gate outcome" },
+    "boundary_ok": { "type": ["boolean", "null"], "description": "committed diff ⊆ declared touch_set" },
+    "ship_pr": { "type": ["string", "null"], "description": "vestigial — always null per-slice (no per-slice PR). The single campaign PR is run-ledger.campaign_pr." },
+    "merge_sha": { "type": ["string", "null"] },
+    "escalation": { "type": ["string", "null"] },
+    "updated_at": { "type": "string", "description": "ISO-8601 timestamp stamped by the conductor (not inside any workflow script)" }
+  }
+}

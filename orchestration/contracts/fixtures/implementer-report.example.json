@@ -1,0 +1,15 @@
+{
+  "issue": "S1",
+  "branch": "slice/S1",
+  "commit": "000000000000",
+  "files_changed": ["models.ts", "interfaces.ts", "service.ts", "app/main.ts", "app/client.ts", "tests/service.test.ts"],
+  "acs_ticked": ["AC1", "AC2"],
+  "acs_unmet": [],
+  "at_command": "npm test -- service.test.ts",
+  "at_result": "PASS — 2 passed",
+  "full_suite": "1066 passed / 6 skipped",
+  "mypy_ruff": "clean",
+  "linear_state_set": "In Progress",
+  "escalation": null,
+  "report_file": "orchestration/runs/arch-deepening-2026-06/reports/S1.json"
+}

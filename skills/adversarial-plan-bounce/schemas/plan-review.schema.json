@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["score", "verdict", "summary", "structural_blockers", "findings", "held_decisions", "execution_mode_clear", "resolved_prior_blockers", "remaining_prior_blockers"],
+  "properties": {
+    "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "verdict": { "type": "string", "enum": ["unsafe", "not-executable", "blockers-remain", "approved-with-nits", "agreed"] },
+    "summary": { "type": "string", "minLength": 1 },
+    "structural_blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "why", "plan_section", "recommendation"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "why": { "type": "string", "minLength": 1 },
+          "plan_section": { "type": "string" },
+          "recommendation": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "title", "body", "plan_section", "confidence", "recommendation"],
+        "properties": {
+          "severity": { "type": "string", "enum": ["critical", "high", "medium", "low"] },
+          "title": { "type": "string", "minLength": 1 },
+          "body": { "type": "string", "minLength": 1 },
+          "plan_section": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "recommendation": { "type": "string" }
+        }
+      }
+    },
+    "held_decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["decision", "why_held", "owner"],
+        "properties": {
+          "decision": { "type": "string", "minLength": 1 },
+          "why_held": { "type": "string" },
+          "owner": { "type": "string" }
+        }
+      }
+    },
+    "execution_mode_clear": { "type": "boolean" },
+    "resolved_prior_blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "status", "evidence"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["resolved", "partially-resolved"] },
+          "evidence": { "type": "string" }
+        }
+      }
+    },
+    "remaining_prior_blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "why_still_open"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "why_still_open": { "type": "string" }
+        }
+      }
+    }
+  }
+}

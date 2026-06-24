@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "campaign": {
+    "slug": "arch-deepening-2026-06",
+    "title": "Architecture deepening bundle",
+    "source": "~/.claude/plans/feature-bundle.md",
+    "linear_parent_id": null,
+    "approved": false,
+    "concurrency_ceiling": 5
+  },
+  "slices": [
+    {
+      "id": "S1",
+      "title": "Typed challenge vocabulary + honest canary port (B1+A1)",
+      "touch_set": ["models.ts", "interfaces.ts", "service.ts", "app/main.ts", "app/client.ts", "tests/service.test.ts"],
+      "acceptance_criteria": [
+        { "id": "AC1", "text": "StatusEnum StrEnum in models.ts; round-trips to its wire string; worker compares the enum, not a str literal" },
+        { "id": "AC2", "text": "AuditSink protocol + NoOpAuditSink live in interfaces.ts; Worker param defaults to the no-op at the seam (no inline None branch)" }
+      ],
+      "blocked_by": [],
+      "layer_rank": 1,
+      "shared_core": true,
+      "maintenance": false,
+      "linear_issue_id": null
+    },
+    {
+      "id": "S2",
+      "title": "FetchError.reason required (B2)",
+      "touch_set": ["models.ts", "adapters/primary.ts", "adapters/secondary.ts", "adapters/shared.ts", "tests/models.test.ts"],
+      "acceptance_criteria": [
+        { "id": "AC1", "text": "FetchError.reason is required (no default); the _derive_reason validator is removed" },
+        { "id": "AC2", "text": "every FetchError(...) site passes reason= explicitly (CHALLENGE for challenge_detected, OTHER elsewhere); mypy --strict clean; suite green" }
+      ],
+      "blocked_by": ["S1"],
+      "layer_rank": 1,
+      "shared_core": true,
+      "maintenance": false,
+      "linear_issue_id": null
+    }
+  ]
+}

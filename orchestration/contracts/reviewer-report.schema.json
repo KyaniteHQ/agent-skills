@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "reviewer-report.schema.json",
+  "title": "reviewer verdict — verbatim with the agents/reviewer.md contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["issue", "commit", "verdict", "suite", "ac_check", "defects", "merge_recommendation"],
+  "properties": {
+    "issue": { "type": "string" },
+    "commit": { "type": "string" },
+    "verdict": {
+      "type": "string",
+      "enum": ["PASS", "CHANGES", "ESCALATE"],
+      "description": "PASS = every in-scope AC code+test backed, suite green, no invariant violated. CHANGES = concrete fixable defects. ESCALATE = AC-wording decision only the owner can make."
+    },
+    "suite": { "type": "string", "description": "e.g. 'NNN passed / M skipped / K failed'" },
+    "ac_check": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ac", "status"],
+        "properties": {
+          "ac": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["met", "unmet", "vacuous-test", "unwired", "drift"]
+          },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "defects": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "concrete, file:line, why it fails the AC or an invariant — [] if none"
+    },
+    "escalation": { "type": ["string", "null"] },
+    "merge_recommendation": {
+      "type": "string",
+      "enum": ["merge", "re-run implementer with defects", "hold for the owner"]
+    }
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "slices.schema.json",
+  "title": "Slice DAG artifact — to-slices output / slice-conductor input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "campaign", "slices"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "campaign": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slug", "title", "source", "approved"],
+      "properties": {
+        "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "title": { "type": "string", "minLength": 1 },
+        "source": {
+          "type": "string",
+          "description": "plan file path, feature description, or existing Linear parent id this DAG was decomposed from"
+        },
+        "linear_parent_id": {
+          "type": ["string", "null"],
+          "description": "null in dry-run; filled by to-slices publish mode after DAG approval"
+        },
+        "approved": {
+          "type": "boolean",
+          "description": "the owner approved this DAG. The conductor REFUSES to dispatch any agent or perform any Linear write unless true."
+        },
+        "concurrency_ceiling": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "default": 5,
+          "description": "HARD CAP on simultaneous teammates (≤5, per the agent-teams docs' 3-5 guidance). The DAG owns parallelism STRUCTURE; this only bounds the launch set = ready-frontier ∩ ceiling."
+        }
+      }
+    },
+    "slices": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/slice" }
+    }
+  },
+  "$defs": {
+    "slice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "touch_set", "acceptance_criteria", "blocked_by"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9-]*$",
+          "description": "Stable slice id (e.g. S1), distinct from linear_issue_id which is assigned at publish."
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "touch_set": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Explicit file/glob paths this slice may modify. The conductor's runtime boundary check asserts the committed diff ⊆ this set."
+        },
+        "acceptance_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/ac" }
+        },
+        "blocked_by": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Slice ids that must merge before this one starts. Carries BOTH semantic dependencies and shared-file collision edges. Must reference existing slice ids and form a DAG (Kahn-validated)."
+        },
+        "layer_rank": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 6,
+          "description": "ADVISORY only (optional). Vertical slices span layers, so this is not a hard gate — validate_dag derives the effective max rank from touch_set for display and relies on Kahn acyclicity for cycle prevention. Layers come from the project-config `layers` list; a rough generic map: 0=pure-core 1=domain-models 2=config 3=interfaces/ports 4=adapters 5=app-core 6=entrypoint."
+        },
+        "shared_core": {
+          "type": "boolean",
+          "default": false,
+          "description": "Touches a serialize-always file (models.ts, interfaces.ts, core/, config.ts, mapping.ts, package.json, lockfile, .secrets.baseline). DERIVED by validate_dag from touch_set — the declared flag must agree or the gate fails. Two concurrent shared_core slices are a collision (foundational files run serially)."
+        },
+        "maintenance": {
+          "type": "boolean",
+          "default": false,
+          "description": "Trivial/maintenance slice → the conductor SKIPS the local `greptile review` shift-left in the per-slice light gate (loop.md §5a); in-team review + the AC gate + the boundary check still run. It still merges into the campaign integration branch like every slice — the WHOLE branch ships to main via ONE babysit-pr (there is no per-slice PR)."
+        },
+        "linear_issue_id": {
+          "type": ["string", "null"],
+          "description": "null in dry-run; the ISSUE-### id filled by to-slices publish mode."
+        }
+      }
+    },
+    "ac": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^AC[0-9]+$" },
+        "text": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "campaign_slug": "arch-deepening-2026-06",
+  "integration_branch": "integration/arch-deepening-2026-06",
+  "campaign_pr": null,
+  "campaign_merge_sha": null,
+  "slices": [
+    {
+      "slice_id": "S1",
+      "linear_issue_id": "ISSUE-301",
+      "phase": "merged",
+      "agent_id": null,
+      "worktree_path": null,
+      "branch": "slice/S1",
+      "base_sha": "ce82169000000000000000000000000000000000",
+      "head_sha": "a1b2c3d4e5f6000000000000000000000000000000",
+      "round_count": 1,
+      "reviewer_verdict": "PASS",
+      "ac_evidence": ["AC1: test_challenge_status_enum PASS", "AC2: test_canary_noop_default PASS"],
+      "gate_result": "pass",
+      "boundary_ok": true,
+      "ship_pr": null,
+      "merge_sha": "f00dbabe00000000000000000000000000000000",
+      "escalation": null,
+      "updated_at": "2026-06-17T12:30:00Z"
+    },
+    {
+      "slice_id": "S2",
+      "linear_issue_id": "ISSUE-302",
+      "phase": "dispatched",
+      "agent_id": "impl-S2@session-9ce4e753",
+      "worktree_path": "worktrees/S2",
+      "branch": "slice/S2",
+      "base_sha": "f00dbabe00000000000000000000000000000000",
+      "head_sha": null,
+      "round_count": 0,
+      "reviewer_verdict": null,
+      "ac_evidence": [],
+      "gate_result": null,
+      "boundary_ok": null,
+      "ship_pr": null,
+      "merge_sha": null,
+      "escalation": null,
+      "updated_at": "2026-06-17T12:31:00Z"
+    }
+  ]
+}

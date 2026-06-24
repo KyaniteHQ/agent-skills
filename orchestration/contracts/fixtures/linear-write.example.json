@@ -1,0 +1,10 @@
+{
+  "op": "tick_ac",
+  "identity": { "kind": "ac", "key": "S1:AC1:9f2c1a" },
+  "issue_id": "ISSUE-301",
+  "status": null,
+  "ac_id": "AC1",
+  "ac_checksum": "9f2c1a",
+  "body": "AC1 met — test_challenge_status_enum PASS (case_id-only evidence).",
+  "comment_marker": "slice-conductor:S1:AC1"
+}

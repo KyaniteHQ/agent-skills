@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "run-ledger.schema.json",
+  "title": "Run ledger — the conductor's durable state file at orchestration/runs/<slug>/ledger.json",
+  "description": "The OBJECT that frontier.py consumes (frontier reads ledger.slices): a campaign_slug plus a `slices` array of ledger-entry records. Each record's full shape is in ledger-entry.schema.json; this wrapper asserts the fields frontier.py and resume depend on. This is the durable, resumable source of truth — NOT Linear status.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["campaign_slug", "slices"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "campaign_slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "integration_branch": { "type": ["string", "null"], "description": "the campaign working trunk (integration/<slug>) cut off main once at §0; slices merge INTO it, never into main. Deleted at §5b after the squash to main." },
+    "campaign_pr": { "type": ["string", "null"], "description": "the single babysit-pr integration->main PR (the heavy gate); null until §5b opens it" },
+    "campaign_merge_sha": { "type": ["string", "null"], "description": "the squash-merge commit on main — the whole campaign as one commit; null until the §5b merge is confirmed" },
+    "slices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slice_id", "phase", "round_count", "updated_at"],
+        "properties": {
+          "slice_id": { "type": "string" },
+          "phase": {
+            "type": "string",
+            "enum": ["pending", "dispatched", "changes", "pass", "shipped", "merged", "held", "blocked"]
+          },
+          "round_count": { "type": "integer", "minimum": 0 },
+          "updated_at": { "type": "string" }
+        }
+      }
+    }
+  }
+}

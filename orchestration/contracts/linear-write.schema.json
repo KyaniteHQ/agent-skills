@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "linear-write.schema.json",
+  "title": "Linear write op — performed by the conductor from the main loop ONLY (subagent writes silently no-op)",
+  "description": "Every Linear mutation the conductor makes is shaped by this. Idempotent: find-before-create keyed off the identity fields (mirrors app/client.ts dedupe).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["op", "identity"],
+  "properties": {
+    "op": {
+      "type": "string",
+      "enum": ["create_parent", "create_child", "set_status", "tick_ac", "update_body", "comment", "set_done"],
+      "description": "create_* in to-slices publish mode (post-approval); set_status/tick_ac/update_body/comment/set_done by the conductor from implementer/reviewer evidence. update_body keeps the issue DESCRIPTION current each transition (body-over-comments — the at-a-glance state); comment is reserved for durable findings/escalation, not a mechanical status trail."
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "key"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["parent", "child", "edge", "ac", "comment"] },
+        "key": {
+          "type": "string",
+          "description": "find-before-create key: parent=campaign slug · child=slice id · edge=<from>-><to> · ac=ac checksum · comment=marker tag"
+        }
+      }
+    },
+    "issue_id": { "type": ["string", "null"], "description": "target Linear issue id (null when creating)" },
+    "status": { "type": ["string", "null"], "enum": ["In Progress", "Done", "Blocked", null] },
+    "ac_id": { "type": ["string", "null"] },
+    "ac_checksum": { "type": ["string", "null"], "description": "sha of the AC text — detects AC drift on re-run" },
+    "body": { "type": ["string", "null"], "description": "the comment body (op=comment) OR the new issue description (op=update_body); redacted of the project's secrets/PII per its rules" },
+    "comment_marker": { "type": ["string", "null"], "description": "stable tag making the comment idempotent (update-in-place, not duplicate)" }
+  }
+}

@@ -1,0 +1,8 @@
+# Secret/PII scrub gate for this PUBLIC repo (D14).
+# Run `pre-commit install` once; `pre-commit run -a` to scan the whole tree.
+# Bump pins with `pre-commit autoupdate`.
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
