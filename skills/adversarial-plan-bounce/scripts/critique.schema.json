@@ -1,0 +1,102 @@
+{
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "claim": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_impact": {
+          "type": "string",
+          "minLength": 1
+        },
+        "failure_scenario": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_status": {
+          "type": "string",
+          "enum": [
+            "packet_supported",
+            "bundle_supported",
+            "needs_verification"
+          ]
+        },
+        "minimal_patch": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "claim",
+        "contract_impact",
+        "failure_scenario",
+        "evidence_basis",
+        "evidence_status",
+        "minimal_patch"
+      ]
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "revise",
+        "reject"
+      ]
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "missing_verification": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "simpler_alternative": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "plan_patch": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "verdict",
+    "blockers",
+    "risks",
+    "missing_verification",
+    "simpler_alternative",
+    "plan_patch"
+  ]
+}

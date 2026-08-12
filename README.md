@@ -25,7 +25,7 @@ docs/            third-party-skills.md (re-install list for skills NOT vendored 
 | [`check-pr`](skills/check-pr/) | One-shot triage of a PR: unresolved comments, failing checks, incomplete description; optionally fix, push, resolve. Adapted from `greptileai/skills` (MIT). |
 | [`greptile-cli`](skills/greptile-cli/) | Run and manage local Greptile reviews from the terminal — review a branch before opening a PR. |
 | [`pr-review-canvas`](skills/pr-review-canvas/) | Render an interactive HTML PR-review walkthrough: core vs mechanical changes, reviewer annotations, moved-code detection. |
-| [`adversarial-plan-bounce`](skills/adversarial-plan-bounce/) | Adversarially grade a plan with Codex as a second model (0-100, structural blockers, held decisions). v1 = one round; v2 loops to convergence. |
+| [`adversarial-plan-bounce`](skills/adversarial-plan-bounce/) | Red-team a grounded plan with an isolated cross-model critic, structured findings, evidence adjudication, and resumable review. |
 | [`metric-gated-refactor`](skills/metric-gated-refactor/) | Metric-gated refactoring loop for **Python**: requires a measured signal (radon CC + grimp/Louvain) AND a named problem before any change. |
 | [`to-slices`](skills/to-slices/) | Decompose a plan/PRD into a VALIDATED DAG of vertical slices behind a Kahn + antichain + layer-rank gate. *Orchestration bundle.* |
 | [`slice-conductor`](skills/slice-conductor/) | Execute a validated slice DAG end-to-end as an agent-team lead (worktree per slice, implement→review→fix→merge→ship). *Orchestration bundle.* |
